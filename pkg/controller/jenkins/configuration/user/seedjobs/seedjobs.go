@@ -49,6 +49,9 @@ const (
 
 	workspaceVolumeName = "workspace"
 	workspaceVolumePath = "/home/jenkins/workspace"
+
+	// Agent docker image
+	AgentImage = "jenkins/jnlp-slave:alpine"
 )
 
 var seedJobGroovyScriptTemplate = template.Must(template.New(creatingGroovyScriptName).Parse(`
@@ -409,7 +412,7 @@ func agentDeployment(jenkins *v1alpha2.Jenkins, namespace string, agentName stri
 					Containers: []corev1.Container{
 						{
 							Name:  "jnlp",
-							Image: "jenkins/jnlp-slave:alpine",
+							Image: getAgentImage(jenkins),
 							Env: []corev1.EnvVar{
 								{
 									Name: "JENKINS_TUNNEL",
@@ -477,6 +480,16 @@ func agentDeployment(jenkins *v1alpha2.Jenkins, namespace string, agentName stri
 			},
 		},
 	}, nil
+}
+
+func getAgentImage(jenkins *v1alpha2.Jenkins) string {
+	agentImage := AgentImage
+	for _, container := range jenkins.Spec.SeedJobAgent.Containers {
+		if container.Name == AgentName {
+			agentImage = container.Image
+		}
+	}
+	return agentImage
 }
 
 func seedJobCreatingGroovyScript(seedJob v1alpha2.SeedJob) (string, error) {

@@ -257,7 +257,7 @@ endif
 .PHONY: clean
 clean: ## Cleanup any build binaries or packages
 	@echo "+ $@"
-	go clean
+	go clean $(BUILD_PATH)
 	rm $(NAME) || echo "Couldn't delete, not there."
 	rm -r $(BUILDDIR) || echo "Couldn't delete, not there."
 

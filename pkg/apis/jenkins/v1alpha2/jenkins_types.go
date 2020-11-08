@@ -18,6 +18,10 @@ type JenkinsSpec struct {
 	// +optional
 	SeedJobs []SeedJob `json:"seedJobs,omitempty"`
 
+	// SeedJobAgent defines common Jenkins Seed Job configur
+	// +optional
+	SeedJobAgent SeedJobAgent `json:"seedJobAgent,omitempty"`
+
 	// Notifications defines list of a services which are used to inform about Jenkins status
 	// Can be used to integrate chat services like Slack, Microsoft Teams or Mailgun
 	// +optional
@@ -534,6 +538,11 @@ var AllowedJenkinsCredentialMap = map[string]string{
 	string(NoJenkinsCredentialCredentialType): "",
 	string(BasicSSHCredentialType):            "",
 	string(UsernamePasswordCredentialType):    "",
+}
+
+// Backup defines configuration of Jenkins backup
+type SeedJobAgent struct {
+	Containers []Container `json:"containers,omitempty"`
 }
 
 // SeedJob defines configuration for seed job

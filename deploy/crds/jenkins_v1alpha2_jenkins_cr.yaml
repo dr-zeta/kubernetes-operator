@@ -4,6 +4,25 @@ metadata:
   name: example
 spec:
   master:
+    basePlugins:
+      - name: configuration-as-code
+        # Do not go over this version or you will face:
+        # - https://github.com/jenkinsci/configuration-as-code-plugin/pull/1332
+        # - https://github.com/jenkinsci/configuration-as-code-plugin/issues/1339
+        # 1.45 still bugged
+        version: "1.39"
+      - name: git
+        version: "4.4.5"
+      - name: job-dsl
+        version: "1.77"
+      - name: kubernetes
+        version: "1.27.3"
+      - name: kubernetes-credentials-provider
+        version: "0.15"
+      - name: workflow-aggregator
+        version: "2.6"
+      - name: workflow-job
+        version: "2.40"
     containers:
     - name: jenkins-master
       image: jenkins/jenkins:lts
@@ -35,6 +54,10 @@ spec:
         requests:
           cpu: "1"
           memory: 500Mi
+  seedJobAgent:
+    containers:
+      - name: seed-job-agent
+        image: jenkins/inbound-agent # docker image for seed job
   seedJobs:
   - id: jenkins-operator
     targets: "cicd/jobs/*.jenkins"
